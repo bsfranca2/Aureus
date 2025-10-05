@@ -27,17 +27,25 @@ public class StorePaymentConfigurationEntityTypeConfiguration : IEntityTypeConfi
             .HasColumnType("bigint");
 
         storePaymentConfiguration.Property(spc => spc.StoreId)
-            .HasConversion(new StoreIdConverter());
+            .HasConversion(new StoreIdConverter())
+            .HasColumnType("bigint")
+            .IsRequired();
 
         storePaymentConfiguration.Property(spc => spc.PaymentMethodId)
-            .HasConversion(new PaymentMethodIdConverter());
+            .HasConversion(new PaymentMethodIdConverter())
+            .HasColumnType("bigint")
+            .IsRequired();
 
         storePaymentConfiguration.Property(spc => spc.PaymentGatewayId)
-            .HasConversion(new PaymentGatewayIdConverter());
+            .HasConversion(new PaymentGatewayIdConverter())
+            .HasColumnType("bigint")
+            .IsRequired();
 
-        storePaymentConfiguration.Property(spc => spc.IsEnabled);
+        storePaymentConfiguration.Property(spc => spc.IsEnabled)
+            .IsRequired();
 
-        storePaymentConfiguration.Property(spc => spc.IsActive);
+        storePaymentConfiguration.Property(spc => spc.IsActive)
+            .IsRequired();
 
         storePaymentConfiguration.OwnsOne(spc => spc.Credentials, credentialsBuilder =>
         {

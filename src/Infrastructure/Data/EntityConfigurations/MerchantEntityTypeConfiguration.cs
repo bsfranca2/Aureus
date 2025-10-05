@@ -17,9 +17,15 @@ public class MerchantEntityTypeConfiguration : IEntityTypeConfiguration<Merchant
         merchantConfiguration.Property(p => p.Id)
             .ValueGeneratedOnAdd()
             .HasColumnType("bigint");
-        
-        merchantConfiguration.Property(m => m.Id).HasConversion(new MerchantIdConverter());
-        
-        merchantConfiguration.Property(m => m.Name).HasMaxLength(255);
+
+        merchantConfiguration.Property(m => m.Id)
+            .HasConversion(new MerchantIdConverter());
+
+        merchantConfiguration.Property(m => m.Name)
+            .HasMaxLength(255)
+            .IsRequired();
+
+        merchantConfiguration.HasIndex(m => m.Name)
+            .IsUnique();
     }
 }

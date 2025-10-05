@@ -18,13 +18,27 @@ public class StoreEntityTypeConfiguration : IEntityTypeConfiguration<Store>
         storeConfiguration.Property(p => p.Id)
             .ValueGeneratedOnAdd()
             .HasColumnType("bigint");
-        
-        storeConfiguration.Property(s => s.Id).HasConversion(new StoreIdConverter());
-        
-        storeConfiguration.Property(s => s.MerchantId).HasConversion(new MerchantIdConverter());
-        
-        storeConfiguration.HasOne<Merchant>().WithMany().HasForeignKey(s => s.MerchantId);
 
-        storeConfiguration.Property(s => s.Name).HasMaxLength(150);
+        storeConfiguration.Property(s => s.Id)
+            .HasConversion(new StoreIdConverter());
+
+        storeConfiguration.Property(s => s.MerchantId)
+            .HasConversion(new MerchantIdConverter())
+            .HasColumnType("bigint")
+            .IsRequired();
+
+        storeConfiguration.HasOne<Merchant>()
+            .WithMany()
+            .HasForeignKey(s => s.MerchantId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        storeConfiguration.Property(s => s.Name)
+            .HasMaxLength(150)
+            .IsRequired();
+
+        storeConfiguration.HasIndex(s => s.MerchantId);
+
+        storeConfiguration.HasIndex(s => new { s.MerchantId, s.Name })
+            .IsUnique();
     }
 }

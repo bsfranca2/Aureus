@@ -28,7 +28,9 @@ public class PaymentGatewayEntityTypeConfiguration : IEntityTypeConfiguration<Pa
             .HasMaxLength(150)
             .IsRequired();
 
-        paymentGatewayConfiguration.Property(pg => pg.Type);
+        paymentGatewayConfiguration.Property(pg => pg.Type)
+            .HasConversion<int>()
+            .IsRequired();
 
         paymentGatewayConfiguration.Property(pg => pg.IsActive)
             .IsRequired();

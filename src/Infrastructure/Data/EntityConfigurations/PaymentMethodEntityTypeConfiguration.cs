@@ -24,7 +24,9 @@ public class PaymentMethodEntityTypeConfiguration : IEntityTypeConfiguration<Pay
             .HasMaxLength(100)
             .IsRequired();
 
-        paymentMethodConfiguration.Property(pm => pm.Type);
+        paymentMethodConfiguration.Property(pm => pm.Type)
+            .HasConversion<int>()
+            .IsRequired();
 
         paymentMethodConfiguration.Property(pm => pm.IsActive)
             .IsRequired();

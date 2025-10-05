@@ -13,7 +13,9 @@ public class OutboxMessageEntityTypeConfiguration : IEntityTypeConfiguration<Out
 
         outboxMessageConfiguration.HasKey(om => om.Id);
 
-        outboxMessageConfiguration.Property(om => om.Id);
+        outboxMessageConfiguration.Property(om => om.Id)
+            .ValueGeneratedNever()
+            .HasColumnType("uuid");
 
         outboxMessageConfiguration.Property(om => om.Type)
             .HasMaxLength(255)
