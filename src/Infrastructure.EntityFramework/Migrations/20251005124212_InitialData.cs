@@ -79,7 +79,7 @@ namespace Aureus.Infrastructure.EntityFramework.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    StoreId = table.Column<long>(type: "bigint", nullable: false),
+                    StoreId = table.Column<int>(type: "integer", nullable: false),
                     ExternalReference = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     Amount = table.Column<decimal>(type: "numeric(12,2)", precision: 12, scale: 2, nullable: false),
                     Status = table.Column<int>(type: "integer", nullable: false),
@@ -118,7 +118,7 @@ namespace Aureus.Infrastructure.EntityFramework.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     PaymentId = table.Column<Guid>(type: "uuid", nullable: false),
-                    PaymentMethodId = table.Column<long>(type: "bigint", nullable: false),
+                    PaymentMethodId = table.Column<int>(type: "integer", nullable: false),
                     PaymentProviderId = table.Column<long>(type: "bigint", nullable: false),
                     Amount = table.Column<decimal>(type: "numeric(12,2)", precision: 12, scale: 2, nullable: false),
                     Status = table.Column<int>(type: "integer", nullable: false),

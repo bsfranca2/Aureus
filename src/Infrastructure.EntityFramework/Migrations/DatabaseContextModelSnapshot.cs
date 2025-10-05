@@ -204,8 +204,8 @@ namespace Aureus.Infrastructure.EntityFramework.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("integer");
 
-                    b.Property<long>("StoreId")
-                        .HasColumnType("bigint");
+                    b.Property<int>("StoreId")
+                        .HasColumnType("integer");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -325,8 +325,8 @@ namespace Aureus.Infrastructure.EntityFramework.Migrations
                             b1.Property<Guid>("PaymentId")
                                 .HasColumnType("uuid");
 
-                            b1.Property<long>("PaymentMethodId")
-                                .HasColumnType("bigint");
+                            b1.Property<int>("PaymentMethodId")
+                                .HasColumnType("integer");
 
                             b1.Property<long>("PaymentProviderId")
                                 .HasColumnType("bigint");

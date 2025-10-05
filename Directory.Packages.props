@@ -12,22 +12,14 @@
     <PackageVersion Include="Ardalis.Result.FluentValidation" Version="10.1.0" />
     <PackageVersion Include="Bsfranca2.Core" Version="1.4.0" />
     <PackageVersion Include="Carter" Version="8.2.1" />
-    <PackageVersion Include="Dapper" Version="2.1.66" />
     <PackageVersion Include="FluentAssertions" Version="7.2.0" />
     <PackageVersion Include="FluentValidation.DependencyInjectionExtensions" Version="11.11.0" />
     <PackageVersion Include="Mapster" Version="7.4.0" />
     <PackageVersion Include="mercadopago-sdk" Version="2.8.0" />
-    <PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.3" />
-    <PackageVersion Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="9.0.2" />
     <PackageVersion Include="Microsoft.Extensions.Hosting" Version="$(MicrosoftExtensionsVersion)" />
     <PackageVersion Include="Microsoft.Extensions.Logging" Version="$(MicrosoftExtensionsVersion)" />
     <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="$(MicrosoftExtensionsVersion)" />
-    <PackageVersion Include="Nanoid" Version="3.1.0" />
-    <PackageVersion Include="NetDevPack.Security.Jwt.AspNetCore" Version="8.2.2" />
-    <PackageVersion Include="NetDevPack.Security.Jwt.Core" Version="8.2.2" />
-    <PackageVersion Include="RabbitMQ.Client" Version="7.1.2" />
     <PackageVersion Include="Scalar.AspNetCore" Version="2.1.4" />
-    <PackageVersion Include="Scrutor" Version="6.1.0" />
     <PackageVersion Include="Serilog.Extensions.Logging" Version="9.0.1" />
     <PackageVersion Include="Serilog.AspNetCore" Version="9.0.0" />
     <PackageVersion Include="Serilog.Sinks.Console" Version="6.0.0" />
@@ -37,8 +29,6 @@
     <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="$(AspNetVersion)" />
     <PackageVersion Include="Microsoft.Extensions.Logging.Configuration" Version="$(MicrosoftExtensionsVersion)" />
     <PackageVersion Include="Microsoft.Extensions.Configuration.Abstractions" Version="$(MicrosoftExtensionsVersion)" />
-    <PackageVersion Include="ZiggyCreatures.FusionCache" Version="2.2.0" />
-    <PackageVersion Include="ZiggyCreatures.FusionCache.Serialization.SystemTextJson" Version="2.2.0" />
     <!-- Entity Framework -->
     <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="$(EntityFrameworkCoreVersion)" />
@@ -52,7 +42,6 @@
     <PackageVersion Include="Testcontainers" Version="$(TestContainersVersion)" />
     <PackageVersion Include="Testcontainers.PostgreSql" Version="$(TestContainersVersion)" />
     <PackageVersion Include="Testcontainers.Redis" Version="$(TestContainersVersion)" />
-    <PackageVersion Include="Ulid" Version="1.3.4" />
     <PackageVersion Include="xunit" Version="2.9.3" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.13.0" />
     <PackageVersion Include="xunit.runner.visualstudio" Version="3.0.2" />

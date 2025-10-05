@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Aureus.Infrastructure.EntityFramework.Converters;
 
-public class StoreIdConverter() : ValueConverter<StoreId, Guid>(
+public class StoreIdConverter() : ValueConverter<StoreId, int>(
     storeId => storeId.Value,
     value => new StoreId(value)
 );

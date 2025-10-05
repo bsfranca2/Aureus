@@ -7,7 +7,7 @@ IResourceBuilder<ParameterResource> mainDbPassword = builder.AddParameter("postg
 IResourceBuilder<PostgresServerResource> mainDb = builder
     .AddPostgres("postgres", mainDbUsername, mainDbPassword, 5432)
     .WithDataVolume();
-IResourceBuilder<PostgresDatabaseResource> mainDbDatabase = mainDb.AddDatabase("Database", "AurumPayDev");
+IResourceBuilder<PostgresDatabaseResource> mainDbDatabase = mainDb.AddDatabase("Database", "AureusDev");
 
 IResourceBuilder<ProjectResource> checkoutApi = builder
     .AddProject<WebApi>("CheckoutApi")

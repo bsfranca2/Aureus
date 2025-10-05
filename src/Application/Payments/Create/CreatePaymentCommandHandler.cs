@@ -15,7 +15,7 @@ namespace Aureus.Application.Payments.Create;
 
 internal sealed class CreatePaymentCommandHandler(
     IUnitOfWork unitOfWork,
-    IIdempotencyRepository idempotency,
+    // IIdempotencyRepository idempotency,
     IStorePaymentConfigurationService storeConfigs,
     IPaymentMethodRepository paymentMethodRepository,
     IPaymentRepository paymentRepository,
@@ -25,15 +25,17 @@ internal sealed class CreatePaymentCommandHandler(
     public async Task<Result<CreatePaymentResultDto>> Handle(CreatePaymentCommand request,
         CancellationToken cancellationToken)
     {
-        if (!string.IsNullOrWhiteSpace(request.IdempotencyKey))
-        {
-            Guid? existing = await idempotency.TryGetAsync(request.StoreId, request.ExternalReference,
-                request.IdempotencyKey!, cancellationToken);
-            if (existing is not null)
-            {
-                return new CreatePaymentResultDto(existing.Value.ToString());
-            }
-        }
+        var storeId = new StoreId(request.StoreId);
+        
+        // if (!string.IsNullOrWhiteSpace(request.IdempotencyKey))
+        // {
+        //     Guid? existing = await idempotency.TryGetAsync(storeId, request.ExternalReference,
+        //         request.IdempotencyKey!, cancellationToken);
+        //     if (existing is not null)
+        //     {
+        //         return new CreatePaymentResultDto(existing.Value.ToString());
+        //     }
+        // }
 
         PaymentMethod? paymentMethod =
             await paymentMethodRepository.GetActiveByPaymentMethodTypeAsync(request.PaymentMethodType);
@@ -63,11 +65,11 @@ internal sealed class CreatePaymentCommandHandler(
 
         await paymentRepository.CreateAsync(payment);
 
-        if (!string.IsNullOrWhiteSpace(request.IdempotencyKey))
-        {
-            await idempotency.SaveAsync(request.StoreId, request.ExternalReference, request.IdempotencyKey!,
-                payment.Id.Value, cancellationToken);
-        }
+        // if (!string.IsNullOrWhiteSpace(request.IdempotencyKey))
+        // {
+        //     await idempotency.SaveAsync(storeId, request.ExternalReference, request.IdempotencyKey!,
+        //         payment.Id, cancellationToken);
+        // }
 
         ProcessPaymentRequestedEvent evt = new(
             payment.Id.Value.ToString(),

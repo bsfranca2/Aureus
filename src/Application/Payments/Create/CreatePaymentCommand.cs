@@ -7,7 +7,7 @@ using Bsfranca2.Core;
 namespace Aureus.Application.Payments.Create;
 
 public sealed record CreatePaymentCommand(
-    Guid StoreId,
+    int StoreId,
     string ExternalReference,
     decimal Amount,
     PaymentMethodType PaymentMethodType,

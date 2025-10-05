@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Aureus.Infrastructure.EntityFramework.Converters;
 
-public class PaymentMethodIdConverter() : ValueConverter<PaymentMethodId, long>(
+public class PaymentMethodIdConverter() : ValueConverter<PaymentMethodId, int>(
     id => id.Value,
     value => new PaymentMethodId(value)
 );

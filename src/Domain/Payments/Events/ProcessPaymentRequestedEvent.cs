@@ -4,7 +4,7 @@ namespace Aureus.Domain.Payments.Events;
 
 public sealed record ProcessPaymentRequestedEvent(
     string PaymentId,
-    Guid StoreId,
+    int StoreId,
     string ExternalReference,
     decimal Amount,
     int PaymentMethodId,
