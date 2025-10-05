@@ -12,6 +12,7 @@
   </Folder>
   <Folder Name="/src/3.Infrastructure/">
     <Project Path="src/Infrastructure/Infrastructure.csproj" />
+    <Project Path="src/Infrastructure.EntityFramework/Infrastructure.EntityFramework.csproj" />
   </Folder>
   <Folder Name="/src/3.Presentation/">
     <Project Path="src/Presentation/Presentation.csproj" />

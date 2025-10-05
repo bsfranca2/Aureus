@@ -2,7 +2,7 @@ using Aureus.Domain.Configuration;
 using Aureus.Domain.Gateways;
 using Aureus.Domain.PaymentMethods;
 using Aureus.Domain.Stores;
-using Aureus.Infrastructure.Data;
+using Aureus.Infrastructure.EntityFramework;
 
 using Microsoft.EntityFrameworkCore;
 
