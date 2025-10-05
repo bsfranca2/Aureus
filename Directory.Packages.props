@@ -11,7 +11,9 @@
     <PackageVersion Include="Ardalis.Result" Version="10.1.0" />
     <PackageVersion Include="Ardalis.Result.FluentValidation" Version="10.1.0" />
     <PackageVersion Include="Bsfranca2.Core" Version="1.4.0" />
+    <PackageVersion Include="Bsfranca2.Messaging" Version="1.0.0" />
     <PackageVersion Include="Carter" Version="8.2.1" />
+    <PackageVersion Include="Dapper" Version="2.1.66" />
     <PackageVersion Include="FluentAssertions" Version="7.2.0" />
     <PackageVersion Include="FluentValidation.DependencyInjectionExtensions" Version="11.11.0" />
     <PackageVersion Include="Mapster" Version="7.4.0" />

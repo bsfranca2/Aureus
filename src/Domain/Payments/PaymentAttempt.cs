@@ -13,8 +13,8 @@ public class PaymentAttempt : IEntity<PaymentAttemptId>
     public decimal Amount { get; }
 
     public AttemptStatus Status { get; private set; }
-    public string? ProviderTransactionId { get; private set; }
-    public string? ProviderResponse { get; private set; }
+    public string? ProviderTransactionId { get; set; }
+    public string? ProviderResponse { get; set; }
     public string? FailureReason { get; private set; }
 
     public DateTime CreatedAt { get; }
@@ -64,6 +64,20 @@ public class PaymentAttempt : IEntity<PaymentAttemptId>
             null,
             DateTime.UtcNow,
             null);
+    }
+    
+    public void UpdateProviderMetadata(string? providerTransactionId, string? providerResponse)
+    {
+        if (Status is AttemptStatus.Succeeded or AttemptStatus.Cancelled or AttemptStatus.Expired or AttemptStatus.Reversed)
+            throw new InvalidOperationException($"Cannot update metadata in state {Status}.");
+
+        if (!string.IsNullOrWhiteSpace(providerTransactionId))
+            ProviderTransactionId = providerTransactionId;
+
+        if (!string.IsNullOrWhiteSpace(providerResponse))
+            ProviderResponse = providerResponse;
+
+        UpdatedAt = DateTime.UtcNow;
     }
 
     public void MarkProcessing()

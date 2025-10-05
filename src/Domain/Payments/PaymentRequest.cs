@@ -6,7 +6,7 @@ namespace Aureus.Domain.Payments;
 
 public sealed class PaymentRequest
 {
-    public Money Amount { get; }
+    public decimal Amount { get; }
     public PaymentMethodType PaymentMethodType { get; }
     public Dictionary<string, object> PaymentData { get; }
     public Payer? Payer { get; }
@@ -14,7 +14,7 @@ public sealed class PaymentRequest
     public string ExternalReference { get; }
     public IdempotencyKey? IdempotencyKey { get; private set; }
 
-    public PaymentRequest(Money amount, PaymentMethodType paymentMethodType, Dictionary<string, object> paymentData,
+    public PaymentRequest(decimal amount, PaymentMethodType paymentMethodType, Dictionary<string, object> paymentData,
         Payer? payer, string? description, string externalReference, IdempotencyKey? idempotencyKey)
     {
         Amount = amount;

@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Aureus.Infrastructure.EntityFramework.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20251005124212_InitialData")]
+    [Migration("20251005220539_InitialData")]
     partial class InitialData
     {
         /// <inheritdoc />
@@ -32,7 +32,6 @@ namespace Aureus.Infrastructure.EntityFramework.Migrations
                         .HasColumnType("bigint");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
-                    NpgsqlPropertyBuilderExtensions.HasIdentityOptions(b.Property<long>("Id"), 1000L, null, null, null, null, null);
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
@@ -72,7 +71,6 @@ namespace Aureus.Infrastructure.EntityFramework.Migrations
                         .HasColumnType("bigint");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
-                    NpgsqlPropertyBuilderExtensions.HasIdentityOptions(b.Property<long>("Id"), 1000L, null, null, null, null, null);
 
                     b.Property<string>("DisplayName")
                         .IsRequired()
@@ -160,7 +158,6 @@ namespace Aureus.Infrastructure.EntityFramework.Migrations
                         .HasColumnType("bigint");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
-                    NpgsqlPropertyBuilderExtensions.HasIdentityOptions(b.Property<long>("Id"), 1000L, null, null, null, null, null);
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");

@@ -17,7 +17,6 @@ public class PaymentGatewayEntityTypeConfiguration : IEntityTypeConfiguration<Pa
         paymentGatewayConfiguration.Property(pg => pg.Id)
             .HasConversion(new PaymentGatewayIdConverter())
             .ValueGeneratedOnAdd()
-            .HasIdentityOptions(startValue: 1000, incrementBy: 1)
             .HasColumnType("bigint");
 
         paymentGatewayConfiguration.Property(pg => pg.Name)

@@ -66,14 +66,14 @@ public sealed class Payment : IEntity<PaymentId>
     public PaymentAttempt AddAttempt(
         PaymentMethodId methodId,
         PaymentGatewayId gatewayId,
-        Money amount)
+        decimal amount)
     {
         if (Status is PaymentStatus.Cancelled or PaymentStatus.Expired or PaymentStatus.Refunded)
         {
             throw new DomainException($"Cannot add attempt when payment is {Status}");
         }
 
-        PaymentAttempt attempt = PaymentAttempt.Create(Id, methodId, gatewayId, amount.Amount);
+        PaymentAttempt attempt = PaymentAttempt.Create(Id, methodId, gatewayId, amount);
         _attempts.Add(attempt);
         Status = PaymentStatus.Processing;
         return attempt;

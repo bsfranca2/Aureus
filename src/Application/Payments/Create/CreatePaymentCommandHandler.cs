@@ -15,6 +15,7 @@ namespace Aureus.Application.Payments.Create;
 
 internal sealed class CreatePaymentCommandHandler(
     IUnitOfWork unitOfWork,
+    IWorkContext workContext,
     // IIdempotencyRepository idempotency,
     IStorePaymentConfigurationService storeConfigs,
     IPaymentMethodRepository paymentMethodRepository,
@@ -25,7 +26,7 @@ internal sealed class CreatePaymentCommandHandler(
     public async Task<Result<CreatePaymentResultDto>> Handle(CreatePaymentCommand request,
         CancellationToken cancellationToken)
     {
-        var storeId = new StoreId(request.StoreId);
+        var storeId = workContext.GetStoreId();
         
         // if (!string.IsNullOrWhiteSpace(request.IdempotencyKey))
         // {
@@ -46,7 +47,7 @@ internal sealed class CreatePaymentCommandHandler(
         }
 
         StorePaymentConfiguration? activeCfg = await storeConfigs.GetActiveConfigurationAsync(
-            new StoreId(request.StoreId), paymentMethod.Id, cancellationToken);
+            storeId, paymentMethod.Id, cancellationToken);
         if (activeCfg is null || !activeCfg.IsEnabled)
         {
             throw new DomainException("No active payment gateway configured for this store/method.");
@@ -55,7 +56,7 @@ internal sealed class CreatePaymentCommandHandler(
         await unitOfWork.BeginTransactionAsync();
 
         Payment payment = Payment.Create(
-            new StoreId(request.StoreId),
+            storeId,
             request.ExternalReference,
             request.Amount,
             string.IsNullOrWhiteSpace(request.IdempotencyKey)
@@ -73,7 +74,7 @@ internal sealed class CreatePaymentCommandHandler(
 
         ProcessPaymentRequestedEvent evt = new(
             payment.Id.Value.ToString(),
-            request.StoreId,
+            storeId.Value,
             request.ExternalReference,
             request.Amount,
             paymentMethod.Id.Value,

@@ -17,7 +17,6 @@ public class PaymentMethodEntityTypeConfiguration : IEntityTypeConfiguration<Pay
         paymentMethodConfiguration.Property(pm => pm.Id)
             .HasConversion(new PaymentMethodIdConverter())
             .ValueGeneratedOnAdd()
-            .HasIdentityOptions(startValue: 1000, incrementBy: 1) // TODO: Remove
             .HasColumnType("bigint");
 
         paymentMethodConfiguration.Property(pm => pm.Name)

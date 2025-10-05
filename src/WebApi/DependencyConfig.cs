@@ -20,7 +20,7 @@ public static class DependencyConfig
 
         services.AddHttpContextAccessor();
 
-        services.AddPaymentServices(configuration);
+        services.AddServices(configuration);
 
         services.AddMediatR(cfg =>
         {

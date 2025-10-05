@@ -21,6 +21,8 @@
     <Project Path="src/AppHost/AppHost.csproj" />
     <Project Path="src/ServiceDefaults/ServiceDefaults.csproj" />
     <Project Path="src/WebApi/WebApi.csproj" />
+    <Project Path="src/OutboxProcessing/OutboxProcessing.csproj" />
+    <Project Path="src/EventsProcessing/EventsProcessing.csproj" />
   </Folder>
   <Folder Name="/_Solution Items/">
     <File Path="Directory.Build.props" />

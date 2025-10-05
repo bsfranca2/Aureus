@@ -22,7 +22,6 @@ public class StorePaymentConfigurationEntityTypeConfiguration : IEntityTypeConfi
         storePaymentConfiguration.Property(spc => spc.Id)
             .HasConversion(new StorePaymentConfigurationIdConverter())
             .ValueGeneratedOnAdd()
-            .HasIdentityOptions(1000, 1)
             .HasColumnType("bigint");
 
         storePaymentConfiguration.Property(spc => spc.StoreId)

@@ -29,7 +29,6 @@ namespace Aureus.Infrastructure.EntityFramework.Migrations
                         .HasColumnType("bigint");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
-                    NpgsqlPropertyBuilderExtensions.HasIdentityOptions(b.Property<long>("Id"), 1000L, null, null, null, null, null);
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
@@ -69,7 +68,6 @@ namespace Aureus.Infrastructure.EntityFramework.Migrations
                         .HasColumnType("bigint");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
-                    NpgsqlPropertyBuilderExtensions.HasIdentityOptions(b.Property<long>("Id"), 1000L, null, null, null, null, null);
 
                     b.Property<string>("DisplayName")
                         .IsRequired()
@@ -157,7 +155,6 @@ namespace Aureus.Infrastructure.EntityFramework.Migrations
                         .HasColumnType("bigint");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
-                    NpgsqlPropertyBuilderExtensions.HasIdentityOptions(b.Property<long>("Id"), 1000L, null, null, null, null, null);
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
