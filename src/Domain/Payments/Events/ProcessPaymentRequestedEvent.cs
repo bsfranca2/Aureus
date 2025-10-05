@@ -1,16 +1,13 @@
-﻿using Ardalis.Result;
+﻿using Bsfranca2.Core;
 
-using Aureus.Domain.PaymentMethods;
+namespace Aureus.Domain.Payments.Events;
 
-using Bsfranca2.Core;
-
-namespace Aureus.Application.Payments.Create;
-
-public sealed record CreatePaymentCommand(
+public sealed record ProcessPaymentRequestedEvent(
+    string PaymentId,
     Guid StoreId,
     string ExternalReference,
     decimal Amount,
-    PaymentMethodType PaymentMethodType,
+    int PaymentMethodId,
     Dictionary<string, object> PaymentData,
     string? Description,
     string? PayerEmail,
@@ -18,4 +15,4 @@ public sealed record CreatePaymentCommand(
     string? PayerDocumentType,
     string? PayerDocumentNumber,
     string? IdempotencyKey
-) : ICommand<Result<CreatePaymentResultDto>>;
+) : BaseEvent;

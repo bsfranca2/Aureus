@@ -1,4 +1,3 @@
 namespace Aureus.Domain.PaymentMethods;
 
-// TODO: Use int
-public readonly record struct PaymentMethodId(long Value);
+public readonly record struct PaymentMethodId(int Value);

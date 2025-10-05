@@ -1,69 +1,94 @@
-﻿// using Ardalis.Result;
-//
-// using Aureus.Domain.Shared.Exceptions;
-//
-// using Bsfranca2.Core;
-//
-// namespace Aureus.Application.Payments.Create;
-//
-// internal sealed class CreatePaymentCommandHandler : ICommandHandler<CreatePaymentCommand, Result<CreatePaymentResultDto>>
-// {
-//     public Task<Result<CreatePaymentResultDto>> Handle(CreatePaymentCommand request, CancellationToken cancellationToken)
-//     {
-//         // // 1) Idempotência (short-circuit)
-//         // if (!string.IsNullOrWhiteSpace(request.IdempotencyKey))
-//         // {
-//         //     var existing = await _idempotency.TryGetAsync(request.MerchantId, request.StoreId, request.OrderReference, request.IdempotencyKey!, cancellationToken);
-//         //     if (existing is not null)
-//         //         return new CreatePaymentResultDto(existing.Value.ToString());
-//         // }
-//         
-//         // 2) Verifica se há configuração ativa do método para a store
-//         var activeCfg = await _storeConfigs.GetActiveConfigurationAsync(new(cmd.StoreId), cmd.PaymentMethodId, ct);
-//         if (activeCfg is null || !activeCfg.IsEnabled)
-//             throw new DomainException("No active payment gateway configured for this store/method.");
-//         
-//         await _uow.BeginTransactionAsync(ct);
-//         
-//         var payment = new Payment(
-//             merchantId: cmd.MerchantId,
-//             storeId: cmd.StoreId,
-//             orderReference: cmd.OrderReference,
-//             amount: new Money(cmd.Amount, cmd.Currency),
-//             idempotencyKey: string.IsNullOrWhiteSpace(cmd.IdempotencyKey) ? null : new IdempotencyKey(cmd.IdempotencyKey!)
-//         );
-//
-//         await _payments.CreateAsync(payment, ct);
-//         
-//         // 4) Persiste vínculo de idempotência (se houver)
-//         if (!string.IsNullOrWhiteSpace(cmd.IdempotencyKey))
-//             await _idempotency.SaveAsync(cmd.MerchantId, cmd.StoreId, cmd.OrderReference, cmd.IdempotencyKey!, payment.Id.Value, ct);
-//
-//         // 5) Enfileira evento na Outbox para o worker processar o gateway
-//         var evt = new ProcessPaymentRequested(
-//             PaymentId: payment.Id.Value.ToString(),
-//             MerchantId: cmd.MerchantId,
-//             StoreId: cmd.StoreId,
-//             OrderReference: cmd.OrderReference,
-//             Amount: cmd.Amount,
-//             Currency: cmd.Currency,
-//             PaymentMethodId: cmd.PaymentMethodId.Value,
-//             PaymentMethodType: (int)cmd.PaymentMethodType,
-//             PaymentData: cmd.PaymentData,
-//             Description: cmd.Description,
-//             PayerEmail: cmd.PayerEmail,
-//             PayerFullName: cmd.PayerFullName,
-//             PayerDocumentType: cmd.PayerDocumentType,
-//             PayerDocumentNumber: cmd.PayerDocumentNumber,
-//             IdempotencyKey: cmd.IdempotencyKey
-//         );
-//         
-//         var payload = JsonSerializer.Serialize(evt);
-//         await _outbox.EnqueueAsync(type: nameof(ProcessPaymentRequested), payload: payload, ct);
-//
-//         await _uow.CommitTransactionAsync(ct);
-//
-//         // 6) Retorna só o PaymentId para consulta posterior
-//         return new CreatePaymentResultDto(payment.Id.Value.ToString());
-//     }
-// }
+﻿using Ardalis.Result;
+
+using Aureus.Domain.Configuration;
+using Aureus.Domain.Outbox;
+using Aureus.Domain.PaymentMethods;
+using Aureus.Domain.Payments;
+using Aureus.Domain.Payments.Events;
+using Aureus.Domain.Shared.Exceptions;
+using Aureus.Domain.Shared.Interfaces;
+using Aureus.Domain.Stores;
+
+using Bsfranca2.Core;
+
+namespace Aureus.Application.Payments.Create;
+
+internal sealed class CreatePaymentCommandHandler(
+    IUnitOfWork unitOfWork,
+    IIdempotencyRepository idempotency,
+    IStorePaymentConfigurationService storeConfigs,
+    IPaymentMethodRepository paymentMethodRepository,
+    IPaymentRepository paymentRepository,
+    IOutboxRepository outboxRepository
+) : ICommandHandler<CreatePaymentCommand, Result<CreatePaymentResultDto>>
+{
+    public async Task<Result<CreatePaymentResultDto>> Handle(CreatePaymentCommand request,
+        CancellationToken cancellationToken)
+    {
+        if (!string.IsNullOrWhiteSpace(request.IdempotencyKey))
+        {
+            Guid? existing = await idempotency.TryGetAsync(request.StoreId, request.ExternalReference,
+                request.IdempotencyKey!, cancellationToken);
+            if (existing is not null)
+            {
+                return new CreatePaymentResultDto(existing.Value.ToString());
+            }
+        }
+
+        PaymentMethod? paymentMethod =
+            await paymentMethodRepository.GetActiveByPaymentMethodTypeAsync(request.PaymentMethodType);
+
+        if (paymentMethod is null)
+        {
+            return Result.Error("Payment method not active");
+        }
+
+        StorePaymentConfiguration? activeCfg = await storeConfigs.GetActiveConfigurationAsync(
+            new StoreId(request.StoreId), paymentMethod.Id, cancellationToken);
+        if (activeCfg is null || !activeCfg.IsEnabled)
+        {
+            throw new DomainException("No active payment gateway configured for this store/method.");
+        }
+
+        await unitOfWork.BeginTransactionAsync();
+
+        Payment payment = Payment.Create(
+            new StoreId(request.StoreId),
+            request.ExternalReference,
+            request.Amount,
+            string.IsNullOrWhiteSpace(request.IdempotencyKey)
+                ? null
+                : new IdempotencyKey(request.IdempotencyKey!)
+        );
+
+        await paymentRepository.CreateAsync(payment);
+
+        if (!string.IsNullOrWhiteSpace(request.IdempotencyKey))
+        {
+            await idempotency.SaveAsync(request.StoreId, request.ExternalReference, request.IdempotencyKey!,
+                payment.Id.Value, cancellationToken);
+        }
+
+        ProcessPaymentRequestedEvent evt = new(
+            payment.Id.Value.ToString(),
+            request.StoreId,
+            request.ExternalReference,
+            request.Amount,
+            paymentMethod.Id.Value,
+            request.PaymentData,
+            request.Description,
+            request.PayerEmail,
+            request.PayerFullName,
+            request.PayerDocumentType,
+            request.PayerDocumentNumber,
+            request.IdempotencyKey
+        );
+
+        OutboxMessage paymentRequestedMessage = OutboxMessage.Create(evt);
+        await outboxRepository.AddAsync(paymentRequestedMessage);
+
+        await unitOfWork.CommitTransactionAsync();
+
+        return new CreatePaymentResultDto(payment.Id.Value.ToString());
+    }
+}
