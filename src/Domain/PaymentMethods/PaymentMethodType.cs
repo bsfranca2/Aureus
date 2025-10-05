@@ -1,4 +1,4 @@
-namespace Aureus.Domain.Methods;
+namespace Aureus.Domain.PaymentMethods;
 
 public enum PaymentMethodType
 {

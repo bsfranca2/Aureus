@@ -1,6 +1,8 @@
-using Aureus.Core;
 using Aureus.Domain.Gateways;
-using Aureus.Domain.Methods;
+using Aureus.Domain.PaymentMethods;
+using Aureus.Domain.Stores;
+
+using Bsfranca2.Core;
 
 namespace Aureus.Domain.Configuration;
 

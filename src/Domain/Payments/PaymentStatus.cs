@@ -2,10 +2,9 @@ namespace Aureus.Domain.Payments;
 
 public enum PaymentStatus
 {
-    Pending = 0,
+    Created = 0,
     Processing = 1,
-    Completed = 2,
+    Succeeded = 2,
     Failed = 3,
-    Cancelled = 4,
-    Refunded = 5
+    Refunded = 4
 }

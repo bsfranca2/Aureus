@@ -1,7 +1,8 @@
-using Aureus.Core;
 using Aureus.Domain.Gateways;
 
-namespace Aureus.Domain;
+using Bsfranca2.Core;
+
+namespace Aureus.Domain.Shared.Interfaces;
 
 public interface IPaymentGatewayRepository : IRepository<PaymentGateway, PaymentGatewayId>
 {

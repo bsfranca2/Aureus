@@ -1,10 +1,7 @@
-using Aureus.Core;
+using Bsfranca2.Core;
 
-namespace Aureus.Domain.Methods;
+namespace Aureus.Domain.PaymentMethods;
 
-/// <summary>
-///     Represents the type of payment method (Credit Card, PIX, Boleto, etc.)
-/// </summary>
 public sealed class PaymentMethod : IEntity<PaymentMethodId>
 {
     public PaymentMethodId Id { get; }

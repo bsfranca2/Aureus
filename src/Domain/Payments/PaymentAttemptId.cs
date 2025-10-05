@@ -1,6 +1,6 @@
 ﻿namespace Aureus.Domain.Payments;
 
-public class PaymentAttemptId
+public readonly record struct PaymentAttemptId(Guid Value)
 {
-    
+    public PaymentAttemptId() : this(Guid.CreateVersion7()) { }
 }

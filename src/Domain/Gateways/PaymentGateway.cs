@@ -1,4 +1,4 @@
-using Aureus.Core;
+using Bsfranca2.Core;
 
 namespace Aureus.Domain.Gateways;
 

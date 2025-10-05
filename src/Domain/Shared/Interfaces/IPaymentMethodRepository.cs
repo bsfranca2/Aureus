@@ -1,7 +1,8 @@
-using Aureus.Core;
-using Aureus.Domain.Methods;
+using Aureus.Domain.PaymentMethods;
 
-namespace Aureus.Domain;
+using Bsfranca2.Core;
+
+namespace Aureus.Domain.Shared.Interfaces;
 
 public interface IPaymentMethodRepository : IRepository<PaymentMethod, PaymentMethodId>
 {

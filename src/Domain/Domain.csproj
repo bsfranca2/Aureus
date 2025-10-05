@@ -1,8 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
-    <ProjectReference Include="..\Core\Core.csproj" />
+    <Folder Include="Payments\Events\" />
+    <Folder Include="Shared\" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Payments\Events\" />
+    <PackageReference Include="Bsfranca2.Core" />
   </ItemGroup>
 </Project>

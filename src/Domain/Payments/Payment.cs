@@ -1,101 +1,87 @@
-using Aureus.Core;
-using Aureus.Domain.Gateways;
-using Aureus.Domain.Methods;
+using Ardalis.GuardClauses;
+
+using Aureus.Domain.Merchants;
+using Aureus.Domain.PaymentMethods;
+using Aureus.Domain.Shared.Exceptions;
+using Aureus.Domain.Stores;
+
+using Bsfranca2.Core;
 
 namespace Aureus.Domain.Payments;
 
-/// <summary>
-///     Represents a payment transaction
-/// </summary>
 public sealed class Payment : IEntity<PaymentId>
 {
-    public PaymentId Id { get; }
-    public OrderId OrderId { get; }
-    public CustomerId CustomerId { get; }
-    public PaymentMethodId PaymentMethodId { get; }
-    public PaymentGatewayId PaymentGatewayId { get; }
-    public decimal Amount { get; }
-    public PaymentStatus Status { get; private set; }
-    public string? GatewayTransactionId { get; private set; }
-    public string? GatewayResponse { get; private set; }
-    public DateTime CreatedAt { get; }
-    public DateTime? ProcessedAt { get; private set; }
-    public string? FailureReason { get; private set; }
+    private readonly HashSet<PaymentAttempt> _attempts = [];
 
-    private Payment(
-        PaymentId id,
-        OrderId orderId,
-        CustomerId customerId,
-        PaymentMethodId paymentMethodId,
-        PaymentGatewayId paymentGatewayId,
-        decimal amount,
-        PaymentStatus status,
-        string? gatewayTransactionId,
-        string? gatewayResponse,
-        DateTime createdAt,
-        DateTime? processedAt,
-        string? failureReason)
+    public PaymentId Id { get; }
+    public MerchantId MerchantId { get; }
+    public StoreId StoreId { get; }
+    public string OrderReference { get; }
+    public Money Amount { get; }
+    public PaymentStatus Status { get; private set; }
+    public IdempotencyKey? IdempotencyKey { get; private set; }
+    public IReadOnlyCollection<PaymentAttempt> Attempts => _attempts.ToList();
+    public DateTime CreatedAt { get; }
+
+    private Payment(PaymentId id, MerchantId merchantId, StoreId storeId, string orderReference, Money amount,
+        PaymentStatus status, IdempotencyKey? idempotencyKey, DateTime createdAt)
     {
         Id = id;
-        OrderId = orderId;
-        CustomerId = customerId;
-        PaymentMethodId = paymentMethodId;
-        PaymentGatewayId = paymentGatewayId;
+        MerchantId = merchantId;
+        StoreId = storeId;
+        OrderReference = orderReference;
         Amount = amount;
         Status = status;
-        GatewayTransactionId = gatewayTransactionId;
-        GatewayResponse = gatewayResponse;
+        IdempotencyKey = idempotencyKey;
         CreatedAt = createdAt;
-        ProcessedAt = processedAt;
-        FailureReason = failureReason;
     }
 
     public static Payment Create(
-        OrderId orderId,
-        CustomerId customerId,
-        PaymentMethodId paymentMethodId,
-        PaymentGatewayId paymentGatewayId,
-        decimal amount)
+        MerchantId merchantId,
+        StoreId storeId,
+        string orderReference,
+        Money amount,
+        IdempotencyKey? idempotencyKey = null)
     {
-        return new Payment(
-            new PaymentId(),
-            orderId,
-            customerId,
-            paymentMethodId,
-            paymentGatewayId,
-            amount,
-            PaymentStatus.Pending,
-            null,
-            null,
-            DateTime.UtcNow,
-            null,
-            null);
+        Guard.Against.NegativeOrZero(amount.Amount); // TODO: Refactor
+
+        return new Payment(new PaymentId(), merchantId, storeId, orderReference, amount.Normalize(),
+            PaymentStatus.Created, idempotencyKey, DateTime.UtcNow);
     }
 
-    public void MarkAsProcessing(string gatewayTransactionId)
+    public PaymentAttempt AddAttempt(
+        string provider,
+        PaymentMethod method,
+        Money amount)
     {
+        PaymentAttempt attempt = PaymentAttempt.Create(Id, provider, method, amount);
+        _attempts.Add(attempt);
         Status = PaymentStatus.Processing;
-        GatewayTransactionId = gatewayTransactionId;
-        ProcessedAt = DateTime.UtcNow;
+        return attempt;
     }
 
-    public void MarkAsCompleted(string gatewayResponse)
+    public void MarkSucceeded(PaymentAttempt attempt)
     {
-        Status = PaymentStatus.Completed;
-        GatewayResponse = gatewayResponse;
-        ProcessedAt = DateTime.UtcNow;
+        attempt.MarkSucceeded();
+        Status = PaymentStatus.Succeeded;
     }
 
-    public void MarkAsFailed(string failureReason, string? gatewayResponse = null)
+    public void MarkFailed(PaymentAttempt attempt, string reason)
     {
-        Status = PaymentStatus.Failed;
-        FailureReason = failureReason;
-        GatewayResponse = gatewayResponse;
-        ProcessedAt = DateTime.UtcNow;
+        attempt.MarkFailed(reason);
+        if (_attempts.All(a => a.Status == AttemptStatus.Failed))
+        {
+            Status = PaymentStatus.Failed;
+        }
     }
 
-    public void MarkAsRefunded()
+    public void MarkRefunded()
     {
+        if (Status != PaymentStatus.Succeeded)
+        {
+            throw new DomainException("Only succeeded payments can be refunded");
+        }
+
         Status = PaymentStatus.Refunded;
     }
 }
