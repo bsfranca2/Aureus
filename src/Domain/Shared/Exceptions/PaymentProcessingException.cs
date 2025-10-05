@@ -1,4 +1,6 @@
-namespace Aureus.Domain.Exceptions;
+using System;
+
+namespace Aureus.Domain.Shared.Exceptions;
 
 public class PaymentProcessingException : Exception
 {

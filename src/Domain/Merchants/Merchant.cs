@@ -1,9 +1,13 @@
-﻿namespace Aureus.Domain.Merchants;
+using Ardalis.GuardClauses;
 
-public class Merchant
+namespace Aureus.Domain.Merchants;
+
+public sealed class Merchant
 {
-    public MerchantId Id { get; private set; }
-    public string Name { get; private set; }
+    private Merchant()
+    {
+        Name = string.Empty;
+    }
 
     private Merchant(MerchantId id, string name)
     {
@@ -11,8 +15,13 @@ public class Merchant
         Name = name;
     }
 
+    public MerchantId Id { get; private set; }
+    public string Name { get; private set; }
+
     public static Merchant Create(string name)
     {
-        return new Merchant(new MerchantId(), name);
+        Guard.Against.NullOrWhiteSpace(name);
+
+        return new Merchant(new MerchantId(), name.Trim());
     }
 }

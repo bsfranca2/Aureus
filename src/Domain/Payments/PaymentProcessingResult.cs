@@ -1,3 +1,7 @@
+using System.Collections.Generic;
+
+using Ardalis.GuardClauses;
+
 namespace Aureus.Domain.Payments;
 
 /// <summary>
@@ -9,7 +13,7 @@ public sealed class PaymentProcessingResult
     public string? TransactionId { get; }
     public PaymentStatus Status { get; }
     public string? ErrorMessage { get; }
-    public Dictionary<string, object> GatewayResponse { get; }
+    public IReadOnlyDictionary<string, object> GatewayResponse { get; }
 
     private PaymentProcessingResult(
         bool isSuccess,
@@ -22,7 +26,9 @@ public sealed class PaymentProcessingResult
         Status = status;
         TransactionId = transactionId;
         ErrorMessage = errorMessage;
-        GatewayResponse = gatewayResponse ?? new Dictionary<string, object>();
+        GatewayResponse = gatewayResponse is null
+            ? new Dictionary<string, object>()
+            : new Dictionary<string, object>(gatewayResponse);
     }
 
     public static PaymentProcessingResult Success(
@@ -30,13 +36,17 @@ public sealed class PaymentProcessingResult
         PaymentStatus status,
         Dictionary<string, object>? gatewayResponse = null)
     {
-        return new PaymentProcessingResult(true, status, transactionId, null, gatewayResponse);
+        Guard.Against.NullOrWhiteSpace(transactionId);
+
+        return new PaymentProcessingResult(true, status, transactionId.Trim(), null, gatewayResponse);
     }
 
     public static PaymentProcessingResult Failure(
         string errorMessage,
         Dictionary<string, object>? gatewayResponse = null)
     {
-        return new PaymentProcessingResult(false, PaymentStatus.Failed, null, errorMessage, gatewayResponse);
+        Guard.Against.NullOrWhiteSpace(errorMessage);
+
+        return new PaymentProcessingResult(false, PaymentStatus.Failed, null, errorMessage.Trim(), gatewayResponse);
     }
 }

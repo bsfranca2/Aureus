@@ -1,6 +1,7 @@
 using Aureus.Domain.Merchants;
 using Aureus.Domain.PaymentMethods;
 using Aureus.Domain.Payments;
+using Aureus.Domain.Shared;
 using Aureus.Domain.Stores;
 using Aureus.Infrastructure.Data.Converters;
 

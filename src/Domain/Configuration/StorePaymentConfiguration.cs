@@ -1,3 +1,5 @@
+using Ardalis.GuardClauses;
+
 using Aureus.Domain.Gateways;
 using Aureus.Domain.PaymentMethods;
 using Aureus.Domain.Stores;
@@ -11,18 +13,9 @@ namespace Aureus.Domain.Configuration;
 /// </summary>
 public sealed class StorePaymentConfiguration : IEntity<StorePaymentConfigurationId>
 {
-    public StorePaymentConfigurationId Id { get; }
-    public StoreId StoreId { get; }
-    public PaymentMethodId PaymentMethodId { get; }
-    public PaymentGatewayId PaymentGatewayId { get; }
-    public bool IsEnabled { get; private set; }
-    public bool IsActive { get; private set; }
-    public PaymentGatewayCredentials Credentials { get; private set; }
-
-    // EF
     private StorePaymentConfiguration()
     {
-        Credentials = new PaymentGatewayCredentials(string.Empty, string.Empty);
+        Credentials = null!;
     }
 
     private StorePaymentConfiguration(
@@ -30,15 +23,26 @@ public sealed class StorePaymentConfiguration : IEntity<StorePaymentConfiguratio
         StoreId storeId,
         PaymentMethodId paymentMethodId,
         PaymentGatewayId paymentGatewayId,
-        PaymentGatewayCredentials credentials)
+        PaymentGatewayCredentials credentials,
+        bool isEnabled,
+        bool isActive)
     {
         Id = id;
         StoreId = storeId;
         PaymentMethodId = paymentMethodId;
         PaymentGatewayId = paymentGatewayId;
         Credentials = credentials;
-        IsEnabled = true;
+        IsEnabled = isEnabled;
+        IsActive = isActive;
     }
+
+    public StorePaymentConfigurationId Id { get; private set; }
+    public StoreId StoreId { get; private set; }
+    public PaymentMethodId PaymentMethodId { get; private set; }
+    public PaymentGatewayId PaymentGatewayId { get; private set; }
+    public bool IsEnabled { get; private set; }
+    public bool IsActive { get; private set; }
+    public PaymentGatewayCredentials Credentials { get; private set; }
 
     public static StorePaymentConfiguration Create(
         StoreId storeId,
@@ -46,12 +50,19 @@ public sealed class StorePaymentConfiguration : IEntity<StorePaymentConfiguratio
         PaymentGatewayId paymentGatewayId,
         PaymentGatewayCredentials credentials)
     {
+        Guard.Against.Default(storeId);
+        Guard.Against.Default(paymentMethodId);
+        Guard.Against.Default(paymentGatewayId);
+        Guard.Against.Null(credentials);
+
         return new StorePaymentConfiguration(
             new StorePaymentConfigurationId(),
             storeId,
             paymentMethodId,
             paymentGatewayId,
-            credentials);
+            credentials,
+            true,
+            false);
     }
 
     public void Enable()
@@ -76,6 +87,8 @@ public sealed class StorePaymentConfiguration : IEntity<StorePaymentConfiguratio
 
     public void UpdateCredentials(PaymentGatewayCredentials newCredentials)
     {
+        Guard.Against.Null(newCredentials);
+
         Credentials = newCredentials;
     }
 }

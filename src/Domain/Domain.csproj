@@ -4,6 +4,7 @@
     <Folder Include="Shared\" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Ardalis.GuardClauses" />
     <PackageReference Include="Bsfranca2.Core" />
   </ItemGroup>
 </Project>
