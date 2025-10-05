@@ -2,7 +2,12 @@
 
 public enum AttemptStatus
 {
-    Processing = 0,
-    Succeeded = 1,
-    Failed = 2
+    Pending = 0,
+    Processing = 1,
+    Succeeded = 2,
+    Failed = 3,
+    Cancelled = 4,
+    Expired = 5,
+    Reversed = 6,
+    Retrying = 7
 }

@@ -7,8 +7,8 @@ public sealed class PaymentGateway : IEntity<PaymentGatewayId>
     public PaymentGatewayId Id { get; }
     public string Name { get; }
     public string DisplayName { get; }
-    public bool IsActive { get; private set; }
     public PaymentGatewayType Type { get; }
+    public bool IsActive { get; private set; }
 
     private PaymentGateway(PaymentGatewayId id, string name, string displayName, PaymentGatewayType type, bool isActive)
     {

@@ -7,6 +7,8 @@ using Aureus.Domain.Payments;
 using Aureus.Domain.Stores;
 using Aureus.Infrastructure.Data.EntityConfigurations;
 
+using MercadoPago.Http;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace Aureus.Infrastructure.Data;
